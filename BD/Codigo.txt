@@ -1,0 +1,291 @@
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
+
+DROP SCHEMA IF EXISTS `2Proyecto` ;
+CREATE SCHEMA IF NOT EXISTS `2Proyecto` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
+SHOW WARNINGS;
+USE `2Proyecto` ;
+
+-- -----------------------------------------------------
+-- Table `2Proyecto`.`Cargo`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `2Proyecto`.`Cargo` ;
+
+SHOW WARNINGS;
+CREATE  TABLE IF NOT EXISTS `2Proyecto`.`Cargo` (
+  `Id_Cargo` INT NOT NULL ,
+  `Nombre_Cargo` VARCHAR(15) NOT NULL ,
+  PRIMARY KEY (`Id_Cargo`) )
+ENGINE = InnoDB;
+
+SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `2Proyecto`.`Tienda`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `2Proyecto`.`Tienda` ;
+
+SHOW WARNINGS;
+CREATE  TABLE IF NOT EXISTS `2Proyecto`.`Tienda` (
+  `Id_Tienda` INT NOT NULL ,
+  `Nombre_Tienda` VARCHAR(20) NOT NULL ,
+  `Direccion_Tienda` VARCHAR(45) NOT NULL ,
+  `Telefono_Tienda` INT NOT NULL ,
+  PRIMARY KEY (`Id_Tienda`) )
+ENGINE = InnoDB;
+
+SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `2Proyecto`.`Usuario`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `2Proyecto`.`Usuario` ;
+
+SHOW WARNINGS;
+CREATE  TABLE IF NOT EXISTS `2Proyecto`.`Usuario` (
+  `Id_Usuario` INT NOT NULL ,
+  `Cargo_Id_Cargo` INT NOT NULL ,
+  `Tienda_Id_Tienda` INT NOT NULL ,
+  `Nombre_Usuario` VARCHAR(15) NOT NULL ,
+  `Apellido_Usuario` VARCHAR(15) NOT NULL ,
+  `Direccion_Usuario` VARCHAR(45) NOT NULL ,
+  `Telefono_Usuario` DECIMAL(10,0) NOT NULL ,
+  `Clave_Usuario` VARCHAR(70) NOT NULL ,
+  PRIMARY KEY (`Id_Usuario`) ,
+  INDEX `fk_Usuario_Cargo` (`Cargo_Id_Cargo` ASC) ,
+  INDEX `fk_Usuario_Tienda1` (`Tienda_Id_Tienda` ASC) ,
+  CONSTRAINT `fk_Usuario_Cargo`
+    FOREIGN KEY (`Cargo_Id_Cargo` )
+    REFERENCES `2Proyecto`.`Cargo` (`Id_Cargo` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Usuario_Tienda1`
+    FOREIGN KEY (`Tienda_Id_Tienda` )
+    REFERENCES `2Proyecto`.`Tienda` (`Id_Tienda` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `2Proyecto`.`Producto`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `2Proyecto`.`Producto` ;
+
+SHOW WARNINGS;
+CREATE  TABLE IF NOT EXISTS `2Proyecto`.`Producto` (
+  `Ref_Producto` INT NOT NULL ,
+  `Nombre_Producto` VARCHAR(45) NOT NULL ,
+  `Precio_Producto` DOUBLE NOT NULL ,
+  `Existencia_Producto` DECIMAL(10,0) NOT NULL ,
+  PRIMARY KEY (`Ref_Producto`) )
+ENGINE = InnoDB;
+
+SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `2Proyecto`.`Proveedor`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `2Proyecto`.`Proveedor` ;
+
+SHOW WARNINGS;
+CREATE  TABLE IF NOT EXISTS `2Proyecto`.`Proveedor` (
+  `Id_Proveedor` INT NOT NULL ,
+  `Nombre_Proveedor` VARCHAR(45) NOT NULL ,
+  `Apellido_Proveedor` VARCHAR(45) NOT NULL ,
+  `Direccion_Proveedor` VARCHAR(45) NOT NULL ,
+  `Telefono_Proveedor` DECIMAL(10,0) NOT NULL ,
+  PRIMARY KEY (`Id_Proveedor`) )
+ENGINE = InnoDB;
+
+SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `2Proyecto`.`Producto_Tienda`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `2Proyecto`.`Producto_Tienda` ;
+
+SHOW WARNINGS;
+CREATE  TABLE IF NOT EXISTS `2Proyecto`.`Producto_Tienda` (
+  `Tienda_Id_Tienda` INT NOT NULL ,
+  `Producto_Ref_Producto` INT NOT NULL ,
+  `Cantidad` INT NOT NULL ,
+  INDEX `fk_Producto_Tienda_Producto1` (`Producto_Ref_Producto` ASC) ,
+  INDEX `fk_Producto_Tienda_Tienda1` (`Tienda_Id_Tienda` ASC) ,
+  CONSTRAINT `fk_Producto_Tienda_Producto1`
+    FOREIGN KEY (`Producto_Ref_Producto` )
+    REFERENCES `2Proyecto`.`Producto` (`Ref_Producto` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Producto_Tienda_Tienda1`
+    FOREIGN KEY (`Tienda_Id_Tienda` )
+    REFERENCES `2Proyecto`.`Tienda` (`Id_Tienda` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `2Proyecto`.`Producto_Proveedor`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `2Proyecto`.`Producto_Proveedor` ;
+
+SHOW WARNINGS;
+CREATE  TABLE IF NOT EXISTS `2Proyecto`.`Producto_Proveedor` (
+  `Producto_Ref_Producto` INT NOT NULL ,
+  `Proveedor_Id_Proveedor` INT NOT NULL ,
+  `Cantidad` INT NOT NULL ,
+  INDEX `fk_Producto_Proveedor_Producto1` (`Producto_Ref_Producto` ASC) ,
+  INDEX `fk_Producto_Proveedor_Proveedor1` (`Proveedor_Id_Proveedor` ASC) ,
+  CONSTRAINT `fk_Producto_Proveedor_Producto1`
+    FOREIGN KEY (`Producto_Ref_Producto` )
+    REFERENCES `2Proyecto`.`Producto` (`Ref_Producto` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Producto_Proveedor_Proveedor1`
+    FOREIGN KEY (`Proveedor_Id_Proveedor` )
+    REFERENCES `2Proyecto`.`Proveedor` (`Id_Proveedor` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `2Proyecto`.`Factura`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `2Proyecto`.`Factura` ;
+
+SHOW WARNINGS;
+CREATE  TABLE IF NOT EXISTS `2Proyecto`.`Factura` (
+  `No_Factura` INT NOT NULL AUTO_INCREMENT ,
+  `Fecha_Factura` DATETIME NOT NULL ,
+  `Total_Factura` DOUBLE NOT NULL ,
+  PRIMARY KEY (`No_Factura`) )
+ENGINE = InnoDB;
+
+SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `2Proyecto`.`Producto_Factura`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `2Proyecto`.`Producto_Factura` ;
+
+SHOW WARNINGS;
+CREATE  TABLE IF NOT EXISTS `2Proyecto`.`Producto_Factura` (
+  `Producto_Ref_Producto` INT NOT NULL ,
+  `Factura_No_Factura` INT NOT NULL AUTO_INCREMENT ,
+  `Cantidad` INT NOT NULL ,
+  `Costo` DOUBLE NOT NULL ,
+  INDEX `fk_Producto_Factura_Producto1` (`Producto_Ref_Producto` ASC) ,
+  INDEX `fk_Producto_Factura_Factura1` (`Factura_No_Factura` ASC) ,
+  CONSTRAINT `fk_Producto_Factura_Producto1`
+    FOREIGN KEY (`Producto_Ref_Producto` )
+    REFERENCES `2Proyecto`.`Producto` (`Ref_Producto` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Producto_Factura_Factura1`
+    FOREIGN KEY (`Factura_No_Factura` )
+    REFERENCES `2Proyecto`.`Factura` (`No_Factura` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `2Proyecto`.`Login`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `2Proyecto`.`Login` ;
+
+SHOW WARNINGS;
+CREATE  TABLE IF NOT EXISTS `2Proyecto`.`Login` (
+  `Id_Login` INT NOT NULL ,
+  `Nombre_Login` VARCHAR(15) NOT NULL ,
+  `Cargo_Login` DECIMAL(10,0) NOT NULL ,
+  `Tienda_Login` DECIMAL(10,0) NOT NULL ,
+  `Clave_Login` VARCHAR(70) NOT NULL ,
+  PRIMARY KEY (`Id_Login`) )
+ENGINE = InnoDB;
+
+SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `2Proyecto`.`Facturafa`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `2Proyecto`.`Facturafa` ;
+
+SHOW WARNINGS;
+CREATE  TABLE IF NOT EXISTS `2Proyecto`.`Facturafa` (
+  `No_Facturafa` INT NOT NULL AUTO_INCREMENT ,
+  `fecha` DATETIME NOT NULL ,
+  `Ref_Producto` INT NOT NULL ,
+  `Producto` VARCHAR(45) NOT NULL ,
+  `Cantidad` INT NOT NULL ,
+  `costo` VARCHAR(45) NOT NULL ,
+  `total` VARCHAR(45) NOT NULL ,
+  PRIMARY KEY (`No_Facturafa`) )
+ENGINE = InnoDB;
+
+SHOW WARNINGS;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+-- -----------------------------------------------------
+-- Data for table `2Proyecto`.`Cargo`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `2Proyecto`;
+INSERT INTO `2Proyecto`.`Cargo` (`Id_Cargo`, `Nombre_Cargo`) VALUES (1, 'Administrdor');
+INSERT INTO `2Proyecto`.`Cargo` (`Id_Cargo`, `Nombre_Cargo`) VALUES (2, 'Principal');
+INSERT INTO `2Proyecto`.`Cargo` (`Id_Cargo`, `Nombre_Cargo`) VALUES (3, 'Auxiliar');
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `2Proyecto`.`Tienda`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `2Proyecto`;
+INSERT INTO `2Proyecto`.`Tienda` (`Id_Tienda`, `Nombre_Tienda`, `Direccion_Tienda`, `Telefono_Tienda`) VALUES (1, 'Tienda Principal', 'calle falsa 123', 1236547);
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `2Proyecto`.`Usuario`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `2Proyecto`;
+INSERT INTO `2Proyecto`.`Usuario` (`Id_Usuario`, `Cargo_Id_Cargo`, `Tienda_Id_Tienda`, `Nombre_Usuario`, `Apellido_Usuario`, `Direccion_Usuario`, `Telefono_Usuario`, `Clave_Usuario`) VALUES (1026284331, 1, 1, 'Wilo', 'Dragneel', 'mas alla del horizonte', 1234567, MD5('12345'));
+INSERT INTO `2Proyecto`.`Usuario` (`Id_Usuario`, `Cargo_Id_Cargo`, `Tienda_Id_Tienda`, `Nombre_Usuario`, `Apellido_Usuario`, `Direccion_Usuario`, `Telefono_Usuario`, `Clave_Usuario`) VALUES (9306, 2, 1, 'Natsuki', 'Langley', 'kr 1223', 1234578, MD5('12345'));
+INSERT INTO `2Proyecto`.`Usuario` (`Id_Usuario`, `Cargo_Id_Cargo`, `Tienda_Id_Tienda`, `Nombre_Usuario`, `Apellido_Usuario`, `Direccion_Usuario`, `Telefono_Usuario`, `Clave_Usuario`) VALUES (1026, 3, 1, 'Pepe', 'pipo', 'call123', 4125631, MD5('12345'));
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `2Proyecto`.`Proveedor`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `2Proyecto`;
+INSERT INTO `2Proyecto`.`Proveedor` (`Id_Proveedor`, `Nombre_Proveedor`, `Apellido_Proveedor`, `Direccion_Proveedor`, `Telefono_Proveedor`) VALUES (1515, 'Alberto', 'Rios', 'calle falsa 123', 3216547);
+INSERT INTO `2Proyecto`.`Proveedor` (`Id_Proveedor`, `Nombre_Proveedor`, `Apellido_Proveedor`, `Direccion_Proveedor`, `Telefono_Proveedor`) VALUES (2020, 'Maria ', 'Gomez', 'cra 26 # 40-21', 9856321);
+INSERT INTO `2Proyecto`.`Proveedor` (`Id_Proveedor`, `Nombre_Proveedor`, `Apellido_Proveedor`, `Direccion_Proveedor`, `Telefono_Proveedor`) VALUES (969658, 'Marta', 'Alvarez', 'calle 3a# 54-6', 454566);
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `2Proyecto`.`Login`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `2Proyecto`;
+INSERT INTO `2Proyecto`.`Login` (`Id_Login`, `Nombre_Login`, `Cargo_Login`, `Tienda_Login`, `Clave_Login`) VALUES (1026284331, 'Wilo', 1, 1, MD5('12345'));
+INSERT INTO `2Proyecto`.`Login` (`Id_Login`, `Nombre_Login`, `Cargo_Login`, `Tienda_Login`, `Clave_Login`) VALUES (9306, 'Natsuki', 2, 1, MD5('12345'));
+INSERT INTO `2Proyecto`.`Login` (`Id_Login`, `Nombre_Login`, `Cargo_Login`, `Tienda_Login`, `Clave_Login`) VALUES (1026, 'Pepe', 3, 1, MD5('12345'));
+
+COMMIT;
